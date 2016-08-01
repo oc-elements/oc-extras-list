@@ -1,0 +1,67 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-data-table/iron-data-table.html">
+<link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
+
+<!--
+`oc-extras-list`
+Element displaying a list of extras
+
+@demo demo/index.html 
+-->
+
+<dom-module id="oc-extras-list">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    <oc-grid-controls data="[[ extras ]]" total-count="[[ _extrasCount ]]" num-entries="10">
+
+      <iron-data-table>
+        <data-table-column name="Name" sort-by="name">
+          <template>[[item.name]]</template>
+        </data-table-column>
+        <data-table-column name="Description" sort-by="description">
+          <template>[[item.description]]</template>
+        </data-table-column>
+        <data-table-column name="Price" sort-by="price">
+          <template>[[item.price]]</template>
+        </data-table-column>
+        <data-table-column name="Actions">
+          <template>
+            <div data-option-object$="[[ item ]]">
+              <paper-icon-button id="edit" icon="create" title="Edit Option"  on-tap="_actionHandler"></paper-icon-button>
+              <paper-icon-button id="delete" icon="delete" title="Delete Option" on-tap="_actionHandler"></paper-icon-button>
+            </div>
+          </template>
+        </data-table-column>
+      </iron-data-table>
+
+    </oc-grid-controls>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'oc-extras-list',
+
+      properties: {
+        extras: Object
+      },
+      observers: [
+        '_extrasChanged(extras)'
+      ],
+      _extrasChanged: function() {
+        this._extrasCount = this.extras.length;
+      },
+      _actionHandler : function(e) {
+        var extrasObj = JSON.parse(Polymer.dom(event).localTarget.parentElement.getAttribute('data-option-object')),
+                action = e.target.getAttribute('id');
+        this.fire(action, extrasObj);
+      }
+
+    });
+  </script>
+</dom-module>
